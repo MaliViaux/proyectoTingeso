@@ -6,6 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RepairTypePriceRepository extends JpaRepository<RepairTypePriceEntity, Long> {
-    RepairTypePriceEntity findByRepairTypeNumberAndEngineType(Integer repairTypeNumber, String engineType);
     RepairTypePriceEntity findByNameAndEngineType(String name, String engineType);
 }

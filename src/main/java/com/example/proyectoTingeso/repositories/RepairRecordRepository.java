@@ -12,11 +12,6 @@ import java.util.Set;
 
 @Repository
 public interface RepairRecordRepository extends JpaRepository<RepairRecordEntity, Long> {
-    List<RepairRecordEntity> findByCar_CarBrand(String caBrand);
-    @Query("SELECT r FROM RepairRecordEntity r JOIN r.repairTypesPrices rp WHERE rp.repairTypeNumber = :repairTypeNumber AND rp.engineType = :engineType")
-    List<RepairRecordEntity> findByRepairTypeNumberAndEngineType(@Param("repairTypeNumber") Integer repairTypeNumber, @Param("engineType") String engineType);
-    @Query("SELECT r FROM RepairRecordEntity r JOIN r.car c JOIN r.repairTypesPrices rp WHERE c.carType = :carType AND rp.repairTypeNumber = :repairTypeNumber")
-    List<RepairRecordEntity> findByRepairTypeNumberAndCarType(@Param("carType") String carType, @Param("repairTypeNumber") Integer repairTypeNumber);
     @Query("SELECT r FROM RepairRecordEntity r WHERE r.car.id = :carId AND r.entryDate BETWEEN :startDate AND :endDate")
     List<RepairRecordEntity> findRecordsByCarIdAndEntryDateBetween(@Param("carId") Long carId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
     @Query("SELECT r.car.carBrand, SUM(DATEDIFF(r.exitDate, r.entryDate)), COUNT(r) " +
@@ -24,4 +19,16 @@ public interface RepairRecordRepository extends JpaRepository<RepairRecordEntity
             "WHERE r.car.carBrand IS NOT NULL AND r.exitDate IS NOT NULL " +
             "GROUP BY r.car.carBrand")
     List<Object[]> findTotalRepairTimeAndCountByBrand();
+
+    @Query("SELECT rtp.repairTypeNumber, rtp.engineType, COUNT(rr), SUM(rtp.price) " +
+            "FROM RepairRecordEntity rr " +
+            "JOIN rr.repairTypesPrices rtp " +
+            "GROUP BY rtp.repairTypeNumber, rtp.engineType ")
+    List<Object[]> findRepairTypeEngineStats();
+
+    @Query("SELECT rtp.repairTypeNumber, rr.car.carType, COUNT(rr), SUM(rtp.price) " +
+            "FROM RepairRecordEntity rr " +
+            "JOIN rr.repairTypesPrices rtp " +
+            "GROUP BY rtp.repairTypeNumber, rr.car.carType ")
+    List<Object[]> findRepairTypeCarStats();
 }

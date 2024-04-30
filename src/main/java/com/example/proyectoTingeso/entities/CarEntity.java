@@ -21,7 +21,6 @@ cmd
 docker images ver las imagenes
 docker ps ver que esta corriendo
 
-
 en intellig dms del comando grandote
 docker login
 docker push sube la imagen a docker

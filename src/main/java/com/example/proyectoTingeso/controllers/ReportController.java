@@ -2,11 +2,9 @@ package com.example.proyectoTingeso.controllers;
 
 import com.example.proyectoTingeso.services.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -18,11 +16,11 @@ public class ReportController {
 
     @GetMapping("/averageRepairTime")
     public Map<String, Double> getAverageRepairTimePerBrand() {
-        Map<String, Double> averageRepairTimes = reportService.getAverageRepairTimePerBrand();
-
-        return averageRepairTimes;
+        return reportService.getAverageRepairTimePerBrand();
     }
 
-    // hacer un metodo que en la ruta pase el nombre de la reparacion y ahi obtener las cosas. y en el front end un map
-
+    @GetMapping("/stats/{reportNumber}")
+    public List<Map<String, Object>> getRepairTypeStatistics(@PathVariable Integer reportNumber) {
+        return reportService.getRepairTypeStatistics(reportNumber);
+    }
 }

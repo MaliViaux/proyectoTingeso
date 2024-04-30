@@ -5,10 +5,8 @@ import com.example.proyectoTingeso.repositories.RepairRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportService {
@@ -45,5 +43,30 @@ public class ReportService {
         return sortedMap;
     }
 
+    public List<Map<String, Object>> getRepairTypeStatistics(Integer reportNumber) {
+        List<Object[]> results;
+        if (reportNumber == 2){
+            results = repairRecordRepository.findRepairTypeCarStats();
+        } else {
+            results = repairRecordRepository.findRepairTypeEngineStats();
+        }
 
+        Map<Integer, Map<String, Object>> repairTypeStatsMap = new LinkedHashMap<>();
+        results.forEach(objects -> {
+            Integer repairTypeNumber = (Integer) objects[0];
+            String statsType = (String) objects[1]; // reporte 2 de tipo de auto, report 4 tipo de motor
+            Long count = (Long) objects[2];
+            Integer totalAmount = ((Long) objects[3]).intValue();
+
+            Map<String, Object> stats = repairTypeStatsMap.computeIfAbsent(repairTypeNumber, k -> new HashMap<>());
+            stats.put("repairTypeNumber", repairTypeNumber);
+            stats.put(statsType, count);
+            stats.put("Monto", (Integer) stats.getOrDefault("Monto", 0) + totalAmount);
+        });
+
+        // orden mayor a menor
+        return repairTypeStatsMap.values().stream()
+                .sorted((map1, map2) -> Integer.compare((Integer) map2.get("Monto"), (Integer) map1.get("Monto")))
+                .collect(Collectors.toList());
+    }
 }

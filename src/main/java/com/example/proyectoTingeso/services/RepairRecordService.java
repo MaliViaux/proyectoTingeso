@@ -11,7 +11,6 @@ import com.example.proyectoTingeso.repositories.VoucherRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -35,22 +34,6 @@ public class RepairRecordService {
 
     public RepairRecordEntity getRepairRecordById(Long id){
         return repairRecordRepository.findById(id).get();
-    }
-
-    public List<RepairRecordEntity> getRepairRecordsByBrand(String brand){
-        return repairRecordRepository.findByCar_CarBrand(brand);
-    }
-
-    public List<RepairRecordEntity> getRepairRecordsByRepairTypeNumberAndCarType(String carType, Integer repairTypeNumber) {
-        return repairRecordRepository.findByRepairTypeNumberAndCarType(carType, repairTypeNumber);
-    }
-
-    public List<RepairRecordEntity> getRepairRecordsByRepairTypeNumberAndEngineType(String engineType, Integer repairTypeNumber) {
-        return repairRecordRepository.findByRepairTypeNumberAndEngineType(repairTypeNumber, engineType);
-    }
-
-    public List<RepairRecordEntity> getRepairRecordsByCarIdAndEntryDateBetween(Long carId, LocalDate startDate, LocalDate endDate) {
-        return repairRecordRepository.findRecordsByCarIdAndEntryDateBetween(carId, startDate, endDate);
     }
 
     public RepairRecordEntity saveRepairRecord(RepairRecordEntity repairRecord){
@@ -186,49 +169,34 @@ public class RepairRecordService {
 
     public String monthInSpanish(Integer month) {
         String monthName;
-
         switch (month) {
-            case 1:
-                monthName = "Enero";
+            case 1: monthName = "Enero";
                 break;
-            case 2:
-                monthName = "Febrero";
+            case 2: monthName = "Febrero";
                 break;
-            case 3:
-                monthName = "Marzo";
+            case 3: monthName = "Marzo";
                 break;
-            case 4:
-                monthName = "Abril";
+            case 4: monthName = "Abril";
                 break;
-            case 5:
-                monthName = "Mayo";
+            case 5: monthName = "Mayo";
                 break;
-            case 6:
-                monthName = "Junio";
+            case 6: monthName = "Junio";
                 break;
-            case 7:
-                monthName = "Julio";
+            case 7: monthName = "Julio";
                 break;
-            case 8:
-                monthName = "Agosto";
+            case 8: monthName = "Agosto";
                 break;
-            case 9:
-                monthName = "Septiembre";
+            case 9: monthName = "Septiembre";
                 break;
-            case 10:
-                monthName = "Octubre";
+            case 10: monthName = "Octubre";
                 break;
-            case 11:
-                monthName = "Noviembre";
+            case 11: monthName = "Noviembre";
                 break;
-            case 12:
-                monthName = "Diciembre";
+            case 12: monthName = "Diciembre";
                 break;
-            default:
-                monthName = "Mes inválido";
+            default: monthName = "Mes inválido";
                 break;
         }
-
         return monthName;
     }
 }

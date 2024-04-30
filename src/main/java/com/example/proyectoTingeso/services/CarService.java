@@ -23,10 +23,6 @@ public class CarService {
         return carRepository.findById(id).get();
     }
 
-    public Optional<CarEntity> getCarByPlate(String plate){
-        return carRepository.findByCarPlate(plate);
-    }
-
     public CarEntity updateCar(CarEntity car) {
         return carRepository.save(car);
     }
