@@ -6,13 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class CarService {
     @Autowired
     CarRepository carRepository;
-    public ArrayList<CarEntity> getCars() { return (ArrayList<CarEntity>) carRepository.findAll(); }
+    public ArrayList<CarEntity> getCars() {
+        List<CarEntity> carsList = carRepository.findAll();
+        return new ArrayList<>(carsList);
+    }
 
     public CarEntity saveCar(CarEntity car){
         car.setNumberOfRecords(0);

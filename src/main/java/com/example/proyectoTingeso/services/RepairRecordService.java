@@ -30,7 +30,9 @@ public class RepairRecordService {
     private double iva = 0.19;
 
     public ArrayList<RepairRecordEntity> getRepairRecords() {
-        return (ArrayList<RepairRecordEntity>) repairRecordRepository.findAll(); }
+        List<RepairRecordEntity> recordList = repairRecordRepository.findAll();
+        return new ArrayList<>(recordList);
+    }
 
     public RepairRecordEntity getRepairRecordById(Long id){
         return repairRecordRepository.findById(id).get();
@@ -51,13 +53,13 @@ public class RepairRecordService {
         // Asigna los RepairTypePriceEntity encontrados al repairRecord
         repairRecord.setRepairTypesPrices(repairTypePrices);
         repairRecordRepository.save(repairRecord);
-        calculationService.calculateAndUpdateTotalRepairCost(repairRecord.getId());
-        calculationService.calculateAndUpdateDiscountAmountEntryDate(repairRecord.getId());
-        calculationService.calculateAndUpdateAgeAndMileageChargeAmount(repairRecord.getId());
-        calculationService.calculateAndUpdateDiscountAmountNumberOfRepairs(repairRecord.getId());
+        calculationService.calculateAndUpdateTotalRepairCost(repairRecord);
+        calculationService.calculateAndUpdateDiscountAmountEntryDate(repairRecord);
+        calculationService.calculateAndUpdateAgeAndMileageChargeAmount(repairRecord);
+        calculationService.calculateAndUpdateDiscountAmountNumberOfRepairs(repairRecord);
         repairRecord.setDiscountAmountVoucher(0);
         repairRecord.setChargeAmountDelay(0);
-        calculationService.calculateFinalCost(repairRecord.getId());
+        calculationService.calculateFinalCost(repairRecord);
         isVoucherAvailable(repairRecord);
         repairRecord.setIsVoucherApplied(false);
         car.setNumberOfRecords(car.getNumberOfRecords() + 1);
@@ -105,8 +107,8 @@ public class RepairRecordService {
         LocalDateTime now = LocalDateTime.now();
         record.setPickupDate(now.toLocalDate());
         record.setPickupTime(LocalDateTime.now());
-        calculationService.calculateAndUpdateDelayCharge(record.getId());
-        calculationService.calculateFinalCost(record.getId());
+        calculationService.calculateAndUpdateDelayCharge(record);
+        calculationService.calculateFinalCost(record);
         if (record.getVoucher() == null){
             record.setDiscountAmountVoucher(0);
         }
@@ -117,7 +119,7 @@ public class RepairRecordService {
     public RepairRecordEntity isVoucherAvailable(RepairRecordEntity repairRecord) {
         // Buscar voucher por mes año y marca
         VoucherEntity voucher = voucherRepository.
-                findByMonthAndYearAndBrandAndNumberOfVouchersGreaterThan(
+                findByVoucherMonthAndVoucherYearAndBrandAndNumberOfVouchersGreaterThan(
                         monthInSpanish(repairRecord.getEntryDate().getMonth().getValue()),
                         repairRecord.getEntryDate().getYear(),
                         repairRecord.getCar().getCarBrand(),0);
@@ -135,7 +137,7 @@ public class RepairRecordService {
 
         record.setIsVoucherApplied(true);
         VoucherEntity voucher = voucherRepository.
-                findByMonthAndYearAndBrandAndNumberOfVouchersGreaterThan(
+                findByVoucherMonthAndVoucherYearAndBrandAndNumberOfVouchersGreaterThan(
                         monthInSpanish(record.getEntryDate().getMonth().getValue()),
                         record.getEntryDate().getYear(),
                         record.getCar().getCarBrand(),0);
@@ -143,7 +145,7 @@ public class RepairRecordService {
         record.setVoucher(voucher);
         record.setDiscountAmountVoucher(voucher.getDiscountAmount());
         record.getVoucher().setNumberOfRecords(record.getVoucher().getNumberOfRecords() + 1);
-        calculationService.calculateFinalCost(record.getId());
+        calculationService.calculateFinalCost(record);
 
         repairRecordRepository.save(record);
     }
@@ -154,14 +156,14 @@ public class RepairRecordService {
 
         record.setIsVoucherApplied(false);
         VoucherEntity voucher = voucherRepository.
-                findByMonthAndYearAndBrandAndNumberOfVouchersGreaterThan(
+                findByVoucherMonthAndVoucherYearAndBrandAndNumberOfVouchersGreaterThan(
                         monthInSpanish(record.getEntryDate().getMonth().getValue()),
                         record.getEntryDate().getYear(),
                         record.getCar().getCarBrand(),0);
         voucher.setNumberOfVouchers(voucher.getNumberOfVouchers() + 1);
         record.getVoucher().setNumberOfRecords(record.getVoucher().getNumberOfRecords() - 1);
         record.setDiscountAmountVoucher(0);
-        calculationService.calculateFinalCost(record.getId());
+        calculationService.calculateFinalCost(record);
         record.setVoucher(null);
 
         repairRecordRepository.save(record);

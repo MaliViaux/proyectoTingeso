@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VoucherRepository extends JpaRepository<VoucherEntity, Long> {
-    VoucherEntity findByMonthAndYearAndBrandAndNumberOfVouchersGreaterThan(
+    VoucherEntity findByVoucherMonthAndVoucherYearAndBrandAndNumberOfVouchersGreaterThan(
             String month, Integer year, String brand, Integer numberOfVouchersThreshold);
 }

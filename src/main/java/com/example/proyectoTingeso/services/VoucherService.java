@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class VoucherService {
     @Autowired
     VoucherRepository voucherRepository;
-    public ArrayList<VoucherEntity> getVouchers() { return (ArrayList<VoucherEntity>) voucherRepository.findAll(); }
+    public ArrayList<VoucherEntity> getVouchers() {
+        List<VoucherEntity> vouchersList = voucherRepository.findAll();
+        return new ArrayList<>(vouchersList);
+    }
 
     public VoucherEntity saveVoucher(VoucherEntity voucher){
         voucher.setNumberOfRecords(0);

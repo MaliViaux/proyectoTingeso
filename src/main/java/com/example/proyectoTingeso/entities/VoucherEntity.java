@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "vouchers")
-@Data // set getters y setters
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class VoucherEntity {
@@ -31,9 +31,9 @@ public class VoucherEntity {
     @Column(nullable = false)
     private String brand; // marca asociada al bono
     @Column(nullable = false)
-    private String month; // mes del bono
+    private String voucherMonth; // mes del bono
     @Column(nullable = false)
-    private Integer year; // año del bono
+    private Integer voucherYear; // año del bono
     @Column(nullable = true)
     private Integer numberOfRecords; // numero de registros asociados
 }

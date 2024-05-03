@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
 import java.util.Set;
 
 // IMPORTANE MORE RUN/DEBUG->RUN WITH COVERAGE, PORCENTAJE DE PROBADO
@@ -51,9 +51,6 @@ docker compose up
 
 dato
 los nueves, wikipedia
-
-
-
  */
 @Entity
 @Table(name = "cars")
@@ -77,11 +74,11 @@ public class CarEntity {
     private String carBrand; // marca
     @Column(nullable = false)
     private String carType; // tipo de auto (Sedán/Hatchback/SUV/Pickup/Furgoneta)
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String carModel; // modelo
     @Column(nullable = false)
     private String engineType; // tipo de motor (Gasolina/Diésel/Híbrido/Eléctrico)
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer carSeats; // numero de asientos
     @Column(nullable = false)
     private Integer carYear; // año de fabricacion
@@ -89,4 +86,18 @@ public class CarEntity {
     private Integer carMileage; // kilometraje
     @Column(nullable = true)
     private Integer numberOfRecords; // numero de registros asociados
+
+    public CarEntity(Long id, String carPlate, String carBrand, String carType,
+                     String engineType, Integer carYear, Integer carMileage) {
+        this.id = id;
+        this.carRecords = null;
+        this.carPlate = carPlate;
+        this.carBrand = carBrand;
+        this.carModel = "any";
+        this.carType = carType;
+        this.engineType = engineType;
+        this.carYear = carYear;
+        this.carMileage = carMileage;
+        this.numberOfRecords = 0;
+    }
 }

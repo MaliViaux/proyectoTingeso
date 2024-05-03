@@ -7,12 +7,14 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "repairRecords")
-@Data // set getters y setters
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"car"})
@@ -78,4 +80,28 @@ public class RepairRecordEntity {
     private Integer DiscountAmountNumberOfRepairs; // descuento por numero de reparaciones en un año
     @Column(nullable = true)
     private Integer iva; // 19%
+
+    // constructor con campos minimos
+    public RepairRecordEntity(Long id, String carPlate, LocalDate entryDate, LocalDateTime entryTime) {
+        this.id = id;
+        this.carPlate = carPlate;
+        this.entryDate = entryDate;
+        this.entryTime = entryTime;
+        this.car = null;
+        this.isVoucherApplied = null;
+        this.isVoucherAvailable = null;
+        this.totalRepairCost = null;
+        this.finalCost = null;
+        this.exitDate = null;
+        this.exitTime = null;
+        this.pickupDate = null;
+        this.pickupTime = null;
+        this.chargeAmountAge = null;
+        this.chargeAmountMileage = null;
+        this.chargeAmountDelay = null;
+        this.DiscountAmountVoucher = null;
+        this.DiscountAmountEntryDate = null;
+        this.DiscountAmountNumberOfRepairs = null;
+        this.iva = null;
+    }
 }

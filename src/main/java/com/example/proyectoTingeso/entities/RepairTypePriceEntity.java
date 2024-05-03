@@ -6,11 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
 @Table(name = "repairTypePrice")
-@Data // set getters y setters
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class RepairTypePriceEntity {
@@ -27,4 +29,13 @@ public class RepairTypePriceEntity {
     private String name; // ej: Reparacion del sistema de frenos
     private String engineType; // gasolina, diesel, electrico, hibrido
     private Integer price; // precio CLP
+
+    public RepairTypePriceEntity(Long id, Integer repairTypeNumber, String name, String engineType, Integer price) {
+        this.repairTypePriceId = id;
+        this.recordsWithType = null;
+        this.repairTypeNumber = repairTypeNumber;
+        this.name = name;
+        this.engineType = engineType;
+        this.price = price;
+    }
 }

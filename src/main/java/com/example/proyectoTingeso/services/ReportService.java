@@ -5,6 +5,8 @@ import com.example.proyectoTingeso.repositories.RepairRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,40 +18,38 @@ public class ReportService {
     CarRepository carRepository;
     @Autowired
     RepairRecordService repairRecordService;
-
     public Map<String, Double> getAverageRepairTimePerBrand() {
-        List<Object[]> brandRepairData = repairRecordRepository.findTotalRepairTimeAndCountByBrand();
-        Map<String, Double> averageRepairTimes = new HashMap<>();
+        List<Object[]> brandRepairData = repairRecordRepository.findBrandAndRepairDates();
+        Map<String, List<Long>> repairTimesByBrand = new HashMap<>();
 
-        for (Object[] data : brandRepairData) {
+        for (Object[] data : brandRepairData) { // Calculate the difference in days and organize by brand
             String brand = (String) data[0];
-            Long totalDays = (Long) data[1];
-            Long count = (Long) data[2];
+            LocalDate entryDate = (LocalDate) data[1];
+            LocalDate exitDate = (LocalDate) data[2];
+            long daysBetween = ChronoUnit.DAYS.between(entryDate, exitDate);
 
-            double averageTime = count > 0 ? (double) totalDays / count : 0;
-            averageRepairTimes.put(brand, averageTime);
+            if (!repairTimesByBrand.containsKey(brand)) {
+                repairTimesByBrand.put(brand, new ArrayList<>());
+            }
+            repairTimesByBrand.get(brand).add(daysBetween);
         }
 
-        // Ordenar el mapa por valores de mayor a menor
-        Map<String, Double> sortedMap = new TreeMap<>((a, b) -> {
-            int result = averageRepairTimes.get(b).compareTo(averageRepairTimes.get(a));
-            if (result == 0) {
-                return a.compareTo(b); // Comparar por marca si los tiempos promedio son iguales
-            }
-            return result;
-        });
+        Map<String, Double> averageRepairTimes = new HashMap<>();
+        for (Map.Entry<String, List<Long>> entry : repairTimesByBrand.entrySet()) { // Calculate average repair times per brand
+            double average = entry.getValue().stream().mapToLong(Long::longValue).average().orElse(0);
+            averageRepairTimes.put(entry.getKey(), average);
+        }
 
+        // Sort the map by average repair time from highest to lowest
+        Map<String, Double> sortedMap = new TreeMap<>((a, b) -> averageRepairTimes.get(b).compareTo(averageRepairTimes.get(a)));
         sortedMap.putAll(averageRepairTimes);
         return sortedMap;
     }
 
     public List<Map<String, Object>> getRepairTypeStatistics(Integer reportNumber) {
         List<Object[]> results;
-        if (reportNumber == 2){
-            results = repairRecordRepository.findRepairTypeCarStats();
-        } else {
-            results = repairRecordRepository.findRepairTypeEngineStats();
-        }
+        if (reportNumber == 2){ results = repairRecordRepository.findRepairTypeCarStats(); }
+        else { results = repairRecordRepository.findRepairTypeEngineStats(); }
 
         Map<Integer, Map<String, Object>> repairTypeStatsMap = new LinkedHashMap<>();
         results.forEach(objects -> {
