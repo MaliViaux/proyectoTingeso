@@ -1,0 +1,1 @@
+docker run --name backend-container -p 8090:8090 -e DB_HOST=mysql-container -e DB_PORT=3306 -e DB_USERNAME=root -e DB_PASSWORD=1234 --network ge-network -d maliviaux/spring-image

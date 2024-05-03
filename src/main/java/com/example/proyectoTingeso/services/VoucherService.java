@@ -27,6 +27,7 @@ public class VoucherService {
     }
 
     public VoucherEntity updateVoucher(VoucherEntity voucher) {
+        voucher.setNumberOfRecords(0);
         return voucherRepository.save(voucher);
     }
 

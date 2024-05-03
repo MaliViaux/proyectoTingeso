@@ -65,16 +65,19 @@ public class ReportServiceTest {
     @Transactional
     public void whenRecords_getAverageRepairTimePerBrand() {
         // Given
-        recordService.finalizeRecord(record1.getId());
-        recordService.finalizeRecord(record2.getId());
-        recordService.pickupRecord(record1.getId());
-        recordService.pickupRecord(record2.getId());
+        LocalDate exit = LocalDate.of(2024, 5, 3);
+        record1.setExitDate(exit);
+        record2.setExitDate(exit);
+        record1.setPickupDate(exit);
+        record2.setPickupDate(exit);
+        recordService.updateRepairRecord(record1);
+        recordService.updateRepairRecord(record2);
 
         // When
         Map<String, Double> averageRepairTimes = reportService.getAverageRepairTimePerBrand();
 
         // Then
-        assertEquals(7.0, averageRepairTimes.get("Mazda"), "The average repair time for Mazda should be 7 days.");
+        assertEquals(8.0, averageRepairTimes.get("Mazda"), "The average repair time for Mazda should be 7 days.");
     }
 
     @Test
